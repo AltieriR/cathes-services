@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 
-var StudentSchema = new mongoose.Schema({
+var ProfessorSchema = new mongoose.Schema({
     name: {
         type: String,
         require: true
@@ -27,13 +27,13 @@ var StudentSchema = new mongoose.Schema({
     }
 });
 
-StudentSchema.pre('save', async function(next){
+ProfessorSchema.pre('save', async function(next){
     //params: object tuple, encryption rounding times
     var hash = await bcrypt.hash(this.password, 10);
     this.password = hash;
     next();
 });
 
-var Student = mongoose.model('Student', StudentSchema);
+var Professor = mongoose.model('Professor', ProfessorSchema);
 
-module.exports = Student;
+module.exports = Professor;
