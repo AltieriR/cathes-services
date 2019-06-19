@@ -1,9 +1,12 @@
 var path = require('path');
+var Student = require('./../model/student.js');
 var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
+//require('./../controller/auth.js')(app);
 
 app.use(bodyParser.json());
+
 //you can not post "nested object"
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -12,23 +15,50 @@ app.use(function (err, req, res, next) {
     res.status(500).send('Internal error!');
 });
 
-app.use('/user/:id', function (req, res, next) {
-    console.log('Request Type:', req.method)
-    next();
-},
-    function (req, res, next) {
+app.get('/register/professor', async function (req, res) {
+    const noww = Date.now();
+    const { name, email, password, createdAt, additionalInfo } = req.body;
 
+    var professor = new Student({ name, email, password, createdAt, additionalInfo });
+
+    professor.save(function (err) {
+        if (err) return console.log(err);
+        res.status(200).send(professor.name + ' saved successfully!');
+    });
+    console.log(professor);
+});
+
+app.get('/register/student', async function (req, res) {
+    const noww = Date.now();
+    const { name, email, password, createdAt, additionalInfo } = req.body;
+
+    var student = new Student({ name, email, password, createdAt, additionalInfo });
+
+    student.save(function (err) {
+        if (err) return console.log(err);
+        res.status(200).send(student.name + ' saved successfully!');
+    });
+    console.log(student);
+});
+
+app.listen(3000);
+
+/*
+    //var student = await Student.findOne({email:'test@outlook.com'});
+    app.use('/user/:id', function (req, res, next) {
+        let id = req.params.id;
+        console.log('Request Type:', req.method)
+        next();
+    },
+    function (req, res, next) {
         console.log('Request Type:', req.method)
         console.log('Request URL:', req.originalUrl)
         res.send('USER');
         next();
     });
-require('./../controller/auth.js')(app);
-
-app.listen(3000);
-/*
 
 app.use('/user/:id', function (req, res, next) {
+let id = req.params.id;
 console.log('Request URL:', req.originalUrl)
 next();
 }, function (req, res, next) {

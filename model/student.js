@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+var mongoose = require('./../database/config.js');
 var bcrypt = require('bcryptjs');
 
 var StudentSchema = new mongoose.Schema({
@@ -27,12 +27,13 @@ var StudentSchema = new mongoose.Schema({
     }
 });
 
+/*
 StudentSchema.pre('save', async function(next){
     //params: object tuple, encryption rounding times
     var hash = await bcrypt.hash(this.password, 10);
     this.password = hash;
     next();
-});
+});*/
 
 var Student = mongoose.model('Student', StudentSchema);
 
