@@ -41,6 +41,34 @@ app.get('/register/student', async function (req, res) {
     console.log(student);
 });
 
+//res.redirect("/");
+app.put('/update/equipment/:id', async function (req, res) {
+    let id = req.params.id;
+    var equipmentOutdated = await equipmentOutdated.find(id);
+    const createdAt = Date.now();
+    const returned = true;
+    const { name, qrcode, campus, characteristics } = req.body;
+    var equipment = new Equipment({ name, qrcode, campus, createdAt, returned, characteristics });
+    Equipment.findByIdAndUpdate(req.params.id, function (req, res) {
+        if (err) {
+            res.status(400).send('Equipment not found!');
+        } else {
+            let history = { isStudent, responsible, equipment, campus, createdAt, returned, characteristics };
+
+            history.save(function (err) {
+                if (err) return console.log(err);
+                res.status(200).send(student.name + ' saved successfully!');
+            });
+        }
+    });
+
+    equipment.update(function (err) {
+        if (err) return console.log(err);
+        res.status(200).send(student.name + ' updated successfully!');
+    });
+    console.log(equipment);
+});
+
 app.listen(3000);
 
 /*
