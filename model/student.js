@@ -22,7 +22,14 @@ var StudentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    additionalInfo : {
+    myItems: [{
+        item: {
+            itemKey: String, //QR Code / Id
+            rentedAt: Date,
+            rentedUntil: Date,
+        }
+    }],
+    additionalInfo: {
         type: String
     }
 });

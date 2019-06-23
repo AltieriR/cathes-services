@@ -22,6 +22,13 @@ var ProfessorSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    myItems: [{
+        item: {
+            itemKey: String, //QR Code / Id
+            rentedAt: Date,
+            rentedUntil: Date,
+        }
+    }],
     additionalInfo : {
         type: String
     }

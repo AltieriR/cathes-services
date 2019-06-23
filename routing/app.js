@@ -1,5 +1,7 @@
 var path = require('path');
+var Utils = require('./../utils/Utils.js');
 var Student = require('./../model/student.js');
+var Professor = require('./../model/professor.js');
 var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
@@ -15,34 +17,46 @@ app.use(function (err, req, res, next) {
     res.status(500).send('Internal error!');
 });
 
-app.get('/register/professor', async function (req, res) {
-    const noww = Date.now();
-    const { name, email, password, createdAt, additionalInfo } = req.body;
-
-    var professor = new Student({ name, email, password, createdAt, additionalInfo });
+app.post('/professor', async function (req, res) {
+    var professor = Utils.getReqBody(Professor, req.body);
 
     professor.save(function (err) {
-        if (err) return console.log(err);
-        res.status(200).send(professor.name + ' saved successfully!');
+        if (err) {
+            Utils.reqErrorHandling(err, 'Professor', res); //next()
+        } else {
+            res.status(200).send(professor.name + ' saved successfully!');
+        }
     });
     console.log(professor);
 });
 
-app.get('/register/student', async function (req, res) {
-    const noww = Date.now();
-    const { name, email, password, createdAt, additionalInfo } = req.body;
-
-    var student = new Student({ name, email, password, createdAt, additionalInfo });
+app.post('/student', async function (req, res) {
+    var student = Utils.getReqBody(Student, req.body);
 
     student.save(function (err) {
-        if (err) return console.log(err);
-        res.status(200).send(student.name + ' saved successfully!');
+        if (err) {
+            Utils.reqErrorHandling(err, 'Student', res); //next()
+        } else {
+            res.status(200).send(student.name + ' saved successfully!');
+        }
     });
     console.log(student);
 });
 
+app.post('/equipment', async function (req, res) {
+    //handle image
+    //const { qrcode, title, image, description, campus, rentedBy, createdBy, createdAt, modifiedBy, modifiedAt } = req.body;
+    var equipment = Utils.getReqBody(Equipment, req.body);
+
+    equipment.save(function (err) {
+        if (err) return console.log(err);
+        res.status(200).send(equipment.title + ' saved successfully!');
+    });
+    console.log(equipment);
+});
+
 //res.redirect("/");
-app.put('/update/equipment/:id', async function (req, res) {
+app.put('/equipment/:id', async function (req, res) {
     let id = req.params.id;
     var equipmentOutdated = await equipmentOutdated.find(id);
     const createdAt = Date.now();

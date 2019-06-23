@@ -1,17 +1,31 @@
 var mongoose = require('mongoose');
 
 var EquipmentSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        require: true
-    },
     qrcode: {
-        type: String,
+        type: String, //type: mongoose.Schema.Types.ObjectId
         unique: true,
         require: true,
         select: false
     },
+    title: {
+        type: String,
+        require: true
+    },
+    image: {
+        type: String
+    },
+    description: {
+        type: String
+    },
     campus: {
+        type: String,
+        require: true
+    },
+    rentedBy: {
+        type: String,
+        require: true
+    },
+    createdBy: {
         type: String,
         require: true
     },
@@ -19,8 +33,13 @@ var EquipmentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    characteristics: {
-        type: String
+    modifiedBy: {
+        type: String,
+        require: true
+    },
+    modifiedAt: {
+        type: Date,
+        default: Date.now
     },
 });
 
