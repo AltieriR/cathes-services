@@ -1,10 +1,13 @@
-var path = require('path');
-var Utils = require('./../utils/Utils.js');
-var Student = require('./../model/student.js');
-var Professor = require('./../model/professor.js');
-var bodyParser = require('body-parser');
-var express = require('express');
-var app = express();
+const path = require('path');
+const Utils = require('./../utils/Utils.js');
+const Student = require('./../model/student.js');
+const Professor = require('./../model/professor.js');
+const Equipment = require('./../model/equipment.js');
+const History = require('./../model/history.js');
+const bodyParser = require('body-parser');
+const multer = require('multer');
+const express = require('express');
+const app = express();
 //require('./../controller/auth.js')(app);
 
 app.use(bodyParser.json());
@@ -16,6 +19,34 @@ app.use(function (err, req, res, next) {
     console.error(err.stack);
     res.status(500).send('Internal error!');
 });
+
+app.use(express.static('upload'));
+
+const rejectFile = function(req, file, callback){
+    if(file.mimeType === 'image/jpg' || file.mimeType === 'image/png'){
+        callback(new Error('Only jpg or png image types allowed'), true);
+    } else {
+        callback(null, false);
+    }
+};
+
+const storageConfig = multer.diskStorage({
+    destination: function(req, file, callback){
+        callback(null, './upload/'); //err, path
+    },
+    filename: function(req, file, callback){
+        callback(null, '_' +file.originalname);
+    }
+});
+
+const upload = multer({storage: storageConfig});
+/*
+const upload = multer({
+    storage: storageConfig,
+    limits: {
+        fileSize: (1024 * 1024) * 10 //10mb 
+    }
+});*/
 
 app.post('/professor', async function (req, res) {
     var professor = Utils.getReqBody(Professor, req.body);
@@ -43,35 +74,45 @@ app.post('/student', async function (req, res) {
     console.log(student);
 });
 
-app.post('/equipment', async function (req, res) {
+app.post('/equipment', upload.single('image'), async function (req, res) {
     //handle image
-    //const { qrcode, title, image, description, campus, rentedBy, createdBy, createdAt, modifiedBy, modifiedAt } = req.body;
+    //const { qrcode, name, image, description, campus, rentedBy, createdBy, createdAt, modifiedBy, modifiedAt } = req.body;
     var equipment = Utils.getReqBody(Equipment, req.body);
-
+    console.log('-=43=-5=-34-=5');
+    console.log(req.file.originalname);
+    if(req.file){
+        equipment.image = req.file.path;
+    }
+    //console.log(equipment);
     equipment.save(function (err) {
-        if (err) return console.log(err);
-        res.status(200).send(equipment.title + ' saved successfully!');
+        if (err) return console.log(err.errmsg);
+        //res.status(200).send(equipment.name + ' saved successfully!');
     });
-    console.log(equipment);
+    //console.log(equipment);
 });
 
 //res.redirect("/");
 app.put('/equipment/:id', async function (req, res) {
     let id = req.params.id;
-    var equipmentOutdated = await equipmentOutdated.find(id);
+    //var equipmentOutdated = await equipmentOutdated.find(id);
     const createdAt = Date.now();
-    const returned = true;
-    const { name, qrcode, campus, characteristics } = req.body;
-    var equipment = new Equipment({ name, qrcode, campus, createdAt, returned, characteristics });
+    //const returned = true;
+    //const { name, qrcode, campus, characteristics } = req.body;
+    /*var query = MyModel.find({ name: /john/i }, null, { skip: 10 });
+    var promise = query.exec();
+    promise.addBack(function (err, docs) {}); */
+
+    var equipment = Utils.getReqBody(Equipment, req.body);
     Equipment.findByIdAndUpdate(req.params.id, function (req, res) {
         if (err) {
             res.status(400).send('Equipment not found!');
         } else {
-            let history = { isStudent, responsible, equipment, campus, createdAt, returned, characteristics };
+            console.log(equipment.name);
+            let history = Utils.getReqBody(History, req.body);
 
             history.save(function (err) {
                 if (err) return console.log(err);
-                res.status(200).send(student.name + ' saved successfully!');
+                //res.status(200).send(history.responsible + ' saved successfully!');
             });
         }
     });
@@ -83,30 +124,20 @@ app.put('/equipment/:id', async function (req, res) {
     console.log(equipment);
 });
 
+app.get('/equipment', async function (req, res) {
+    var equipment = Equipment.find({}, 'name', function (err, docs) {
+        if (err) return res.status(500).send('Internal error!');
+        res.json(docs);
+    }).select('qrcode name');
+
+    //console.log(equipment);
+});
+
 app.listen(3000);
 
 /*
-    //var student = await Student.findOne({email:'test@outlook.com'});
-    app.use('/user/:id', function (req, res, next) {
-        let id = req.params.id;
-        console.log('Request Type:', req.method)
-        next();
-    },
-    function (req, res, next) {
         console.log('Request Type:', req.method)
         console.log('Request URL:', req.originalUrl)
-        res.send('USER');
-        next();
-    });
-
-app.use('/user/:id', function (req, res, next) {
-let id = req.params.id;
-console.log('Request URL:', req.originalUrl)
-next();
-}, function (req, res, next) {
-console.log('Request Type:', req.method)
-next();
-});
 
 app.route('/user')
 .get(function (req, res) {

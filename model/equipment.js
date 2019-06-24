@@ -7,7 +7,7 @@ var EquipmentSchema = new mongoose.Schema({
         require: true,
         select: false
     },
-    title: {
+    name: {
         type: String,
         require: true
     },
@@ -43,9 +43,9 @@ var EquipmentSchema = new mongoose.Schema({
     },
 });
 
-EquipmentSchema.pre('save', async function(next){
+/*EquipmentSchema.pre('save', async function(next){
     next();
-});
+});*/
 
 var Equipment = mongoose.model('Equipment', EquipmentSchema);
 
