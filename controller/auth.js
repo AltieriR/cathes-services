@@ -27,10 +27,14 @@ router.get('/ts', async function(req, res){
 
 //Router for JWT
 router.post('/login', async function(req, res){
+    console.log("req received");
+    console.log(req.body);
     var email = req.body.email;
     var password = req.body.password;
+    console.log("req received");
+    console.log(email);
 
-    var student = await Student.findOne({email}).select('password');
+    var student = await Student.findOne({email}); //.select('password')
     if(!student){
         return res.status(400).send({error: 'This email is not registered!'});
     }
@@ -40,4 +44,5 @@ router.post('/login', async function(req, res){
     res.send({student});
 });
 
-module.exports = app => app.use('/users', router);
+module.exports = router;
+//module.exports = app => app.use('/users', router);

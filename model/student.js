@@ -15,8 +15,7 @@ var StudentSchema = new mongoose.Schema({
     password: {
         type: String,
         unique: true,
-        require: true,
-        select: false
+        require: true
     },
     createdAt: {
         type: Date,
