@@ -27,7 +27,7 @@ app.use(function (err, req, res, next) {
     res.status(500).send('Internal error!');
 });
 
-app.use(express.static('upload')); //'/images'
+app.use('/images', express.static('images')); //'/images'
 
 const rejectFile = function (req, file, callback) {
     if (file.mimeType === 'image/jpg' || file.mimeType === 'image/png') {
@@ -39,7 +39,7 @@ const rejectFile = function (req, file, callback) {
 
 const storageConfig = multer.diskStorage({
     destination: function (req, file, callback) {
-        callback(null, './upload/'); //err, path
+        callback(null, './images/'); //err, path
     },
     filename: function (req, file, callback) {
         callback(null, file.originalname.replace(/ /g, ''));
@@ -105,11 +105,6 @@ app.put('/equipment/:id', async function (req, res) {
     let id = req.params.id;
     //var equipmentOutdated = await equipmentOutdated.find(id);
     const createdAt = Date.now();
-    //const returned = true;
-    //const { name, qrcode, campus, characteristics } = req.body;
-    /*var query = MyModel.find({ name: /john/i }, null, { skip: 10 });
-    var promise = query.exec();
-    promise.addBack(function (err, docs) {}); */
 
     var equipment = Utils.getReqBody(Equipment, req.body);
     Equipment.findByIdAndUpdate(req.params.id, function (req, res) {

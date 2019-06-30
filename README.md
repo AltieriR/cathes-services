@@ -9,18 +9,19 @@ https://docs.mongodb.com/manual/administration/install-community/
 ---
 ### On windows CLI:
 
-#####Default service directory - Without Environment Variable set
+##### Default service directory - Without Environment Variable set
 ```
 cd C:\Program Files\MongoDB\Server\4.0\bin
 ```
 
-#####Default database directory/port
+##### Default database directory/port
 ```
 mongod --port 27017 --dbpath C:\data\db
 ```
 *If the command above didn't work right, try it out:* https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/#if-you-installed-mongodb-as-a-windows-service
 
-#####Start the Database Service
+##### Start the Database Service
+Go to the project directory and type in:
 ```
 node routing/app.js
 ```
@@ -28,11 +29,11 @@ node routing/app.js
 ---
 ### On linux CLI:
 
-#####Default service directory - Assuming default settings from MongoDb package manager
+##### Default service directory - Assuming default settings from MongoDb package manager
 ```
 sudo service mongod
 ```
-*If the command above did not work right, select you dist and read the Run MongoDB X Edition Section:* https://docs.mongodb.com/manual/administration/install-on-linux/
+*If the command above didn't work right, select you dist and read the Run MongoDB X Edition Section:* https://docs.mongodb.com/manual/administration/install-on-linux/
 
 ---
 
