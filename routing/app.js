@@ -147,11 +147,14 @@ app.get('/student/:id', async function (req, res) {
     //console.log(equipment);
 });
 
-app.get('/login', async function (req, res) {
+app.post('/login', async function (req, res) {
+    
+    console.log(req.body);
+    console.log(req.body.email);
     var email = req.body.email;
     var password = req.body.password;
 
-    var student = await Student.findOne({ email }); //.select('password')
+    var student = await Student.findOne({ email: email }); //.select('password')
     if (!student) {
         return res.status(400).send({ error: 'This email is not registered!' });
     }
@@ -159,8 +162,10 @@ app.get('/login', async function (req, res) {
     //console.log(await bcrypt.compare(password, bcrypt.hash(student.password)));
     if (password !== student.password) {
         return res.status(400).send({ error: 'Password is wrong!' });
+    } else {
+        return res.status(200).send('Successfully logged in');
     }
-    res.send({ student });
+    //res.send({ student });
 });
 
 app.listen(3000);

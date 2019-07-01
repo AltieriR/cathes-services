@@ -26,7 +26,7 @@ router.get('/ts', async function(req, res){
 });
 
 //Router for JWT
-router.post('/login', async function(req, res){
+router.post('/loginjwt', async function(req, res){
     console.log("req received");
     console.log(req.body);
     var email = req.body.email;
