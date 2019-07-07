@@ -1,11 +1,17 @@
 # Services for CathES #
 Repository made for applications of CathES project
-Get to know more about it on: https://github.com/mateusrcm/cathes-documentation
+Get to know more about it on: https://github.com/mateusrcm/cathes-documentation/tree/cathes-mobile
+
+---
 
 ## 1. Database - MongoDB ##
-Assuming you have MongoDb server installed - link for MongoDb Community below
+Assuming you have MongoDb server installed - link for MongoDb Community below: 
 https://docs.mongodb.com/manual/administration/install-community/
 
+---
+```
+npm install
+```
 ---
 ### On windows CLI:
 

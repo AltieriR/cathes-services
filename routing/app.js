@@ -83,7 +83,7 @@ app.post('/student', async function (req, res) {
 
 app.post('/equipment', upload.single('image'), async function (req, res) {
     //handle image
-    //const { qrcode, name, image, description, campus, rentedBy, createdBy, createdAt, modifiedBy, modifiedAt } = req.body;
+    //const { qrcode, name, image, description, campus, rentedBy, rentedAt, createdBy, createdAt, modifiedBy, modifiedAt } = req.body;
     var equipment = Utils.getReqBody(Equipment, req.body);
 
     if (req.file) {
@@ -92,40 +92,39 @@ app.post('/equipment', upload.single('image'), async function (req, res) {
     } else {
         console.log('A equipment was saved without an image');
     }
-    //console.log(equipment);
     equipment.save(function (err) {
         if (err) return console.log(err.errmsg);
-        //res.status(200).send(equipment.name + ' saved successfully!');
+        console.log(equipment);
+        res.status(200).send(equipment.name + ' saved successfully!');
     });
-    //console.log(equipment);
 });
 
 //res.redirect("/");
-app.put('/equipment/:id', async function (req, res) {
-    let id = req.params.id;
-    //var equipmentOutdated = await equipmentOutdated.find(id);
-    const createdAt = Date.now();
-
-    var equipment = Utils.getReqBody(Equipment, req.body);
-    Equipment.findByIdAndUpdate(req.params.id, function (req, res) {
-        if (err) {
+app.patch('/equipment/:id', async function (req, res) {
+    let equipment = { name, image, description, campus, rentedBy, rentedAt, createdBy, createdAt, modifiedBy } = req.body;
+    equipment.modifiedAt = Date.now();
+    
+    Equipment.findByIdAndUpdate(req.params.id, equipment, function (err, docs) {
+        if (err) { //TODO handle different types of error
             res.status(400).send('Equipment not found!');
         } else {
-            console.log(equipment.name);
-            let history = Utils.getReqBody(History, req.body);
+            console.log(docs.name);
+            //TODO Verify if the rent changed
+            /*let history = Utils.getReqBody(History, req.body);
 
             history.save(function (err) {
                 if (err) return console.log(err);
                 //res.status(200).send(history.responsible + ' saved successfully!');
-            });
+            });*/
+            res.status(200).send(docs.name +' updated successfully!');
+            //res.status(200).send(history.responsible + ' saved successfully!');
         }
     });
 
-    equipment.update(function (err) {
+    /*equipment.update(function (err) {
         if (err) return console.log(err);
         res.status(200).send(student.name + ' updated successfully!');
-    });
-    console.log(equipment);
+    });*/
 });
 
 app.get('/equipment', async function (req, res) {

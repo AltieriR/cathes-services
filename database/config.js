@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/cathesauth', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost/cathesauth', { useNewUrlParser: true, useFindAndModify: false });
 //mongoose.Promise = global.Promise;
 
 (function connectionStatus() {
