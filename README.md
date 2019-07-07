@@ -8,11 +8,10 @@ Get to know more about it on: https://github.com/mateusrcm/cathes-documentation/
 Assuming you have MongoDb server installed - link for MongoDb Community below: 
 https://docs.mongodb.com/manual/administration/install-community/
 
----
 ```
 npm install
 ```
----
+
 ### On windows CLI:
 
 ##### Default service directory - Without Environment Variable set

@@ -25,10 +25,6 @@ var EquipmentSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    rentedAt: {
-        type: Date,
-        require: true
-    },
     createdBy: {
         type: String,
         require: true

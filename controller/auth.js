@@ -1,32 +1,51 @@
-var express = require('express');
-var Student = require('./../model/student.js');
+const express = require('express');
+const Student = require('./../model/student.js');
+const Login = require('./../model/login.js');
+const Utils = require('./../utils/Utils.js');
+const bcrypt = require('bcryptjs');
 
-var router = express.Router();
+const router = express.Router();
 
-router.post('/register', async function(req, res){
-    try {
-        if(await Student.findOne({email})){
-            return res.sendStatus(400).send({error: 'User already exists'});
-        }
-        console.log(req.body);
-        var student = await Student.create(req.body);
-        
-        //Prevent password from being shown on the response 
-        student.password = null;
-
-        return res.send(student);
-    } catch (e){
-        return res.status(400).send({error: 'Registration failed'});
+router.post('/register', async function (req, res) {
+    const { login, password } = req.body;
+    if (await Login.findOne({ login })) {
+        return res.status(400).send({ error: 'User already exists' });
+    } else {
+        let user = Utils.getReqBody(Login, req.body);
+        user.save(function (err, docs) {
+            if (err) {
+                console.log(err);
+                Utils.reqErrorHandling(err, 'User', res);
+                //return res.status(400).send({ error: 'Internal error' });
+            } else {
+                //Prevent password from being shown on the response 
+                user.password = null;
+                return res.send(user);
+            }
+        });
     }
 });
 
-router.get('/ts', async function(req, res){
-    console.log('test');
-    return res.status(200).send({error: 'Ok!'});
+router.post('/login', async function (req, res) {
+    
+    console.log(req.body.email);
+    let email = req.body.email;
+    let password = req.body.password;
+
+    let login = await Login.findOne({ email: email }); //.select('password')
+    if (!login) {
+        return res.status(400).send({ error: 'This email is not registered!' });
+    }
+
+    if (await bcrypt.compare(password, login.password)) {
+        return res.status(200).send('Successfully logged in');
+    } else {
+        return res.status(400).send({ error: 'Password is wrong!' });
+    }
 });
 
 //Router for JWT
-router.post('/loginjwt', async function(req, res){
+router.post('/loginjwt', async function (req, res) {
     console.log("req received");
     console.log(req.body);
     var email = req.body.email;
@@ -34,14 +53,14 @@ router.post('/loginjwt', async function(req, res){
     console.log("req received");
     console.log(email);
 
-    var student = await Student.findOne({email}); //.select('password')
-    if(!student){
-        return res.status(400).send({error: 'This email is not registered!'});
+    var student = await Student.findOne({ email }); //.select('password')
+    if (!student) {
+        return res.status(400).send({ error: 'This email is not registered!' });
     }
-    if(!await bcrypt.compare(password, student.password)){
-        return res.status(400).send({error: 'Password is wrong!'});
+    if (!await bcrypt.compare(password, student.password)) {
+        return res.status(400).send({ error: 'Password is wrong!' });
     }
-    res.send({student});
+    res.send({ student });
 });
 
 module.exports = router;

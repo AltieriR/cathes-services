@@ -1,33 +1,31 @@
-const path = require('path');
 const Utils = require('./../utils/Utils.js');
 const Student = require('./../model/student.js');
 const Professor = require('./../model/professor.js');
 const Equipment = require('./../model/equipment.js');
-const Auth = require('./../controller/auth.js');
 const History = require('./../model/history.js');
+const auth = require('./../controller/auth.js');
+const path = require('path');
 const bodyParser = require('body-parser');
 const multer = require('multer');
-const bcrypt = require('bcryptjs');
 const express = require('express');
 const cors = require('cors');
 const app = express();
 
 app.use(cors());
 
-app.use(Auth);
-//require('./../controller/auth.js')(app);
-
 app.use(bodyParser.json());
 
 //you can not post "nested object"
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use('/images', express.static('images')); //'/images'
+
+app.use(auth);
+
 app.use(function (err, req, res, next) {
     console.error(err.stack);
     res.status(500).send('Internal error!');
 });
-
-app.use('/images', express.static('images')); //'/images'
 
 const rejectFile = function (req, file, callback) {
     if (file.mimeType === 'image/jpg' || file.mimeType === 'image/png') {
@@ -83,7 +81,7 @@ app.post('/student', async function (req, res) {
 
 app.post('/equipment', upload.single('image'), async function (req, res) {
     //handle image
-    //const { qrcode, name, image, description, campus, rentedBy, rentedAt, createdBy, createdAt, modifiedBy, modifiedAt } = req.body;
+    //const { qrcode, name, image, description, campus, rentedBy, createdBy, createdAt, modifiedBy, modifiedAt } = req.body;
     var equipment = Utils.getReqBody(Equipment, req.body);
 
     if (req.file) {
@@ -101,7 +99,7 @@ app.post('/equipment', upload.single('image'), async function (req, res) {
 
 //res.redirect("/");
 app.patch('/equipment/:id', async function (req, res) {
-    let equipment = { name, image, description, campus, rentedBy, rentedAt, createdBy, createdAt, modifiedBy } = req.body;
+    let equipment = { name, image, description, campus, rentedBy, createdBy, createdAt, modifiedBy } = req.body;
     equipment.modifiedAt = Date.now();
     
     Equipment.findByIdAndUpdate(req.params.id, equipment, function (err, docs) {
@@ -146,26 +144,6 @@ app.get('/student/:id', async function (req, res) {
     //console.log(equipment);
 });
 
-app.post('/login', async function (req, res) {
-    
-    console.log(req.body);
-    console.log(req.body.email);
-    var email = req.body.email;
-    var password = req.body.password;
-
-    var student = await Student.findOne({ email: email }); //.select('password')
-    if (!student) {
-        return res.status(400).send({ error: 'This email is not registered!' });
-    }
-
-    //console.log(await bcrypt.compare(password, bcrypt.hash(student.password)));
-    if (password !== student.password) {
-        return res.status(400).send({ error: 'Password is wrong!' });
-    } else {
-        return res.status(200).send('Successfully logged in');
-    }
-    //res.send({ student });
-});
 
 app.listen(3000);
 

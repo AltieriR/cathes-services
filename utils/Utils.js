@@ -19,9 +19,9 @@ Utils.reqErrorHandling = function(err, conf, res){
     switch(err.code){
         case 11000:
             if(conf) {
-                res.status(400).send(conf +' já existente!');
+                res.status(400).send(conf +' already exists!');
             } else {
-                res.status(400).send('Já existente!');
+                res.status(400).send('Duplicated!');
             }
             break;
         default:
